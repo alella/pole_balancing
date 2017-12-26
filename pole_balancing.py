@@ -27,6 +27,7 @@ def bias_variable(shape,name):
   initial = tf.constant(0.1, shape=shape)
   return tf.Variable(initial,name=name)
 
+# Initialize network
 env = gym.make('CartPole-v1') 
 env.reset()
 x = tf.placeholder(tf.float32, [1,4],name="x")
@@ -58,7 +59,8 @@ with tf.name_scope("fully_connect_2"):
     tf.add_to_collection('vars', W_fc2)
     tf.add_to_collection('vars', b_fc2)
 
-    
+
+# Setup loss function
 nextQ = tf.placeholder(shape=[2],dtype=tf.float32)
 loss = tf.reduce_sum(tf.square(nextQ - y_net))
 trainer = tf.train.GradientDescentOptimizer(learning_rate=0.001)
@@ -96,9 +98,7 @@ with tf.Session() as sess:
         action = 0
         rewards = []
         for t in range(300):
-            # env.render()
-            # sleep(.1)
-            # print(observation)
+            env.render()
             obs = observation.reshape((1,4))
             Q=sess.run(y_net,feed_dict={x:obs})
             action = np.argmax(Q[0])
@@ -124,6 +124,3 @@ with tf.Session() as sess:
                 print("Episode {} finished after {} timesteps".format(i_episode,t+1))
                 print sum(rewards)
                 break
-        # if t>195:
-        #     print "solved"
-        #     break
