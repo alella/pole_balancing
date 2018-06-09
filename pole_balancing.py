@@ -82,7 +82,7 @@ def replay(memory,sess,y):
     for s,a,r,ns,d in mem_sample:
         targetQ = sess.run(y_net,feed_dict={x:s})
         Q1 = sess.run(y_net,feed_dict={x:ns})
-        targetQ[0][a] = r + y*Q1[0][a]
+        targetQ[0][a] = r + y*max(Q1[0])
         targetQ=targetQ[0]
         sess.run(updateModel,feed_dict={x:s,nextQ:targetQ})
 
